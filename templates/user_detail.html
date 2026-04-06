@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if unavailable %}
+<div class="glass p-4">
+  <h1 class="h4 mb-2">Backend временно недоступен</h1>
+  <a href="/users" class="btn btn-dark">Назад к списку</a>
+</div>
+{% elif not_found %}
+<div class="glass p-4">
+  <h1 class="h4 mb-2">Пользователь не найден</h1>
+  <a href="/users" class="btn btn-dark">Назад к списку</a>
+</div>
+{% else %}
+<div class="glass p-4 mb-4">
+  <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+    <div>
+      <h1 class="h3 mb-1">Пользователь {{ user.max_user_id }}</h1>
+      <p class="text-muted mb-0">{{ user.first_name or "" }} {{ user.last_name or "" }} {% if user.username %}(@{{ user.username }}){% endif %}</p>
+    </div>
+    <a href="/users" class="btn btn-outline-dark">К списку</a>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-md-6 col-xl-3"><div class="glass p-4"><div class="text-muted">Locale</div><div class="h4">{{ user.locale or "-" }}</div></div></div>
+  <div class="col-md-6 col-xl-3"><div class="glass p-4"><div class="text-muted">Запросы</div><div class="h4">{{ user.total_requests }}</div></div></div>
+  <div class="col-md-6 col-xl-3"><div class="glass p-4"><div class="text-muted">First seen</div><div class="small">{{ user.first_seen_at }}</div></div></div>
+  <div class="col-md-6 col-xl-3"><div class="glass p-4"><div class="text-muted">Last seen</div><div class="small">{{ user.last_seen_at }}</div></div></div>
+</div>
+
+<div class="row g-4">
+  <div class="col-xl-6">
+    <div class="glass p-4">
+      <h2 class="h5 mb-3">Последние промпты</h2>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead><tr><th>ID</th><th>Статус</th><th>Тема</th></tr></thead>
+          <tbody>
+            {% for item in recent_prompts %}
+            <tr>
+              <td><a href="/prompts/{{ item.id }}">{{ item.id }}</a></td>
+              <td>{{ item.status }}</td>
+              <td>{{ item.normalized_text }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-6">
+    <div class="glass p-4">
+      <h2 class="h5 mb-3">Последние генерации</h2>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead><tr><th>ID</th><th>Статус</th><th>Стоимость</th></tr></thead>
+          <tbody>
+            {% for item in recent_generations %}
+            <tr>
+              <td><a href="/generations/{{ item.id }}">{{ item.id }}</a></td>
+              <td>{{ item.status }}</td>
+              <td>{{ item.estimated_cost_usd or "-" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if unavailable %}
+<div class="glass p-4">
+  <h1 class="h4 mb-2">Backend временно недоступен</h1>
+  <a href="/prompts" class="btn btn-dark">Назад к списку</a>
+</div>
+{% elif not_found %}
+<div class="glass p-4">
+  <h1 class="h4 mb-2">Промпт не найден</h1>
+  <a href="/prompts" class="btn btn-dark">Назад к списку</a>
+</div>
+{% else %}
+<div class="glass p-4 mb-4">
+  <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+    <div>
+      <h1 class="h3 mb-1">Промпт #{{ prompt.id }}</h1>
+      <p class="text-muted mb-0">Статус: {{ prompt.status }}</p>
+    </div>
+    <a href="/prompts" class="btn btn-outline-dark">К списку</a>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-xl-4">
+    <div class="glass p-4 h-100">
+      <h2 class="h5 mb-3">Метаданные</h2>
+      <p class="mb-2"><strong>User:</strong> {% if user %}<a href="/users/{{ user.id }}">{{ user.max_user_id }}</a>{% else %}-{% endif %}</p>
+      <p class="mb-2"><strong>Conversation:</strong> {{ prompt.conversation_id }}</p>
+      <p class="mb-2"><strong>Created:</strong> {{ prompt.created_at }}</p>
+      <p class="mb-0"><strong>Hash:</strong> <span class="small">{{ prompt.prompt_hash }}</span></p>
+    </div>
+  </div>
+  <div class="col-xl-8">
+    <div class="glass p-4 h-100">
+      <h2 class="h5 mb-3">Текст</h2>
+      <p><strong>Normalized:</strong><br>{{ prompt.normalized_text }}</p>
+      <p><strong>Raw:</strong><br>{{ prompt.raw_text }}</p>
+      <p class="mb-0"><strong>Validation error:</strong><br>{{ prompt.validation_error or "-" }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="glass p-4 mb-4">
+  <h2 class="h5 mb-3">Provider prompt</h2>
+  <pre class="mb-0" style="white-space: pre-wrap;">{{ prompt.provider_prompt or "-" }}</pre>
+</div>
+
+<div class="glass p-4">
+  <h2 class="h5 mb-3">Связанные генерации</h2>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead><tr><th>ID</th><th>Статус</th><th>Провайдер</th><th>Изображение</th></tr></thead>
+      <tbody>
+        {% for item in generations %}
+        <tr>
+          <td><a href="/generations/{{ item.id }}">{{ item.id }}</a></td>
+          <td>{{ item.status }}</td>
+          <td>{{ item.provider_name }} / {{ item.provider_model }}</td>
+          <td>{% if item.public_image_url %}<a href="/images/generations/{{ item.id }}" target="_blank">Открыть</a>{% else %}-{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

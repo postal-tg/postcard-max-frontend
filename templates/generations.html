@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass p-4 mb-4">
+  <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+    <div>
+      <h1 class="h3 mb-1">Генерации</h1>
+      <p class="text-muted mb-0">Статусы, стоимость и ссылки на изображения.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <a class="btn btn-outline-dark" href="/exports/generations.csv">Экспорт CSV</a>
+      <form method="get" class="d-flex gap-2">
+        <input type="text" class="form-control" name="status" value="{{ status }}" placeholder="Статус">
+        <button class="btn btn-dark" type="submit">Фильтр</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="glass p-4">
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Prompt ID</th>
+          <th>Провайдер</th>
+          <th>Статус</th>
+          <th>Стоимость</th>
+          <th>Latency</th>
+          <th>Изображение</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td><a href="/generations/{{ item.id }}">{{ item.id }}</a></td>
+          <td><a href="/prompts/{{ item.prompt_id }}">{{ item.prompt_id }}</a></td>
+          <td>{{ item.provider_name }} / {{ item.provider_model }}</td>
+          <td><span class="badge text-bg-secondary">{{ item.status }}</span></td>
+          <td>{{ item.estimated_cost_usd or "-" }}</td>
+          <td>{{ item.latency_ms or "-" }}</td>
+          <td>
+            {% if item.public_image_url %}
+            <a href="/images/generations/{{ item.id }}" target="_blank">Открыть</a>
+            {% else %}
+            <span class="text-muted">Нет</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass p-4 mb-4">
+  <h1 class="h3 mb-1">Ошибки</h1>
+  <p class="text-muted mb-0">Последние сбои генерации и доставки.</p>
+</div>
+
+<div class="glass p-4">
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Prompt ID</th>
+          <th>Провайдер</th>
+          <th>Ошибка</th>
+          <th>Дата</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td><a href="/generations/{{ item.id }}">{{ item.id }}</a></td>
+          <td><a href="/prompts/{{ item.prompt_id }}">{{ item.prompt_id }}</a></td>
+          <td>{{ item.provider_name }}</td>
+          <td>{{ item.error_message }}</td>
+          <td>{{ item.created_at }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

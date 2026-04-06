@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if unavailable %}
+<div class="glass p-4">
+  <h1 class="h4 mb-2">Backend временно недоступен</h1>
+  <a href="/generations" class="btn btn-dark">Назад к списку</a>
+</div>
+{% elif not_found %}
+<div class="glass p-4">
+  <h1 class="h4 mb-2">Генерация не найдена</h1>
+  <a href="/generations" class="btn btn-dark">Назад к списку</a>
+</div>
+{% else %}
+<div class="glass p-4 mb-4">
+  <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+    <div>
+      <h1 class="h3 mb-1">Генерация #{{ generation.id }}</h1>
+      <p class="text-muted mb-0">Статус: {{ generation.status }}</p>
+    </div>
+    <a href="/generations" class="btn btn-outline-dark">К списку</a>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-xl-4">
+    <div class="glass p-4 h-100">
+      <h2 class="h5 mb-3">Метаданные</h2>
+      <p class="mb-2"><strong>Prompt:</strong> {% if prompt %}<a href="/prompts/{{ prompt.id }}">{{ prompt.id }}</a>{% else %}-{% endif %}</p>
+      <p class="mb-2"><strong>User:</strong> {% if user %}<a href="/users/{{ user.id }}">{{ user.max_user_id }}</a>{% else %}-{% endif %}</p>
+      <p class="mb-2"><strong>Provider:</strong> {{ generation.provider_name }} / {{ generation.provider_model }}</p>
+      <p class="mb-2"><strong>Cost:</strong> {{ generation.estimated_cost_usd or "-" }}</p>
+      <p class="mb-2"><strong>Latency:</strong> {{ generation.latency_ms or "-" }}</p>
+      <p class="mb-0"><strong>Created:</strong> {{ generation.created_at }}</p>
+    </div>
+  </div>
+  <div class="col-xl-8">
+    <div class="glass p-4 h-100">
+      <h2 class="h5 mb-3">Доставка</h2>
+      <p class="mb-2"><strong>Storage key:</strong> {{ generation.storage_key or "-" }}</p>
+      <p class="mb-2"><strong>MAX attachment token:</strong> {{ generation.max_attachment_token or "-" }}</p>
+      <p class="mb-2"><strong>Started:</strong> {{ generation.started_at or "-" }}</p>
+      <p class="mb-2"><strong>Finished:</strong> {{ generation.finished_at or "-" }}</p>
+      <p class="mb-0"><strong>Error:</strong> {{ generation.error_message or "-" }}</p>
+    </div>
+  </div>
+</div>
+
+{% if prompt %}
+<div class="glass p-4 mb-4">
+  <h2 class="h5 mb-3">Тема</h2>
+  <p class="mb-0">{{ prompt.normalized_text }}</p>
+</div>
+{% endif %}
+
+<div class="glass p-4">
+  <h2 class="h5 mb-3">Изображение</h2>
+  {% if generation.public_image_url %}
+  <p><a href="/images/generations/{{ generation.id }}" target="_blank">Открыть изображение</a></p>
+  <img src="/images/generations/{{ generation.id }}" alt="Generated postcard" class="img-fluid rounded">
+  {% else %}
+  <p class="text-muted mb-0">Изображение еще недоступно.</p>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}
