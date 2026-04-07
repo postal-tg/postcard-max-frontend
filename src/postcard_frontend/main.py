@@ -96,7 +96,11 @@ def dashboard(request: Request):
             "recent_generations": [],
         },
     )
-    return template_response(request, "dashboard.html", {"title": "Дашборд", "summary": summary, "backend_error": backend_error})
+    return template_response(
+        request,
+        "dashboard.html",
+        {"title": "Дашборд", "summary": summary, "backend_error": backend_error},
+    )
 
 
 @app.get("/users", response_class=HTMLResponse)
